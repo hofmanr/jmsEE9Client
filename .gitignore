@@ -4,11 +4,28 @@
 # Log file
 *.log
 
+# Intellij
+.idea/
+build/
+*.iml
+*.iws
+
 # BlueJ files
 *.ctxt
 
 # Mobile Tools for Java (J2ME)
 .mtj.tmp/
+
+# Mac
+.DS_Store
+
+# Gradle
+.gradle/
+
+# Maven
+log/
+target/
+generated-java/
 
 # Package Files #
 *.jar
