@@ -1,5 +1,6 @@
 package nl.hofmanr.jms.client;
 
+import nl.hofmanr.jms.client.domain.JmsMessage;
 import nl.hofmanr.jms.client.service.QueueService;
 
 import javax.inject.Inject;
@@ -30,16 +31,6 @@ public class JmsClientEndpoint {
     }
 
     @GET
-    @Path("/{queue}")
-    public Response getMessages(@PathParam("queue") String queueName) {
-        List<String> messages = queueService.getAllMessages(queueName);
-        if (messages.size() == 0) {
-            return Response.noContent().build();
-        }
-        return Response.ok(messages).build();
-    }
-
-    @GET
     @Path("/{queue}/count")
     @Produces(MediaType.TEXT_PLAIN)
     public Response count(@PathParam("queue") String queueName) {
@@ -54,14 +45,43 @@ public class JmsClientEndpoint {
         return Response.ok().build();
     }
 
+    @GET
+    @Path("/{queue}/messages")
+    public Response getMessages(@PathParam("queue") String queueName) {
+        List<JmsMessage> messages = queueService.getMessages(queueName);
+        if (messages.size() == 0) {
+            return Response.noContent().build();
+        }
+        return Response.ok(messages).build();
+    }
+
+    @GET
+    @Path("/{queue}/messages/{messageID}")
+    public Response getMessage(@PathParam("queue") String queueName, @PathParam("messageID") String messageID) {
+        JmsMessage message = queueService.getMessage(queueName, messageID);
+        if (message == null) {
+            return Response.noContent().build();
+        }
+        return Response.ok(message).build();
+    }
+
     @POST
-    @Path("/{queue}")
+    @Path("/{queue}/messages")
     @Consumes(MediaType.TEXT_PLAIN)
     public Response sendMessage(@PathParam("queue") String queueName, String message, @Context UriInfo uriInfo) {
-        queueService.addMessage(queueName, message);
-        Long messageID = 1L;
-        URI createdURI = uriInfo.getBaseUriBuilder().path("queues/" + queueName + "/" + messageID.toString()).build();
+        String messageID = queueService.addMessage(queueName, message);
+        if (messageID == null) {
+            return Response.status(Response.Status.INTERNAL_SERVER_ERROR).build();
+        }
+        URI createdURI = uriInfo.getBaseUriBuilder().path("queues/" + queueName + "/messages/" + messageID).build();
         return Response.created(createdURI).build();
+    }
+
+    @DELETE
+    @Path("/{queue}/messages/{messageID}")
+    public Response deletMessage(@PathParam("queue") String queueName, @PathParam("messageID") String messageID) {
+        queueService.deleteMessage(queueName, messageID);
+        return Response.noContent().build();
     }
 
 }

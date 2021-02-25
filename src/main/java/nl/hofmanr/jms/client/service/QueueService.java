@@ -1,12 +1,14 @@
 package nl.hofmanr.jms.client.service;
 
+import nl.hofmanr.jms.client.domain.JmsMessage;
+import nl.hofmanr.jms.client.domain.JmsMessageBuilder;
 import nl.hofmanr.jms.client.repository.ConnectionFactoryRepository;
 import nl.hofmanr.jms.client.repository.QueueRepository;
 
 import javax.inject.Inject;
 import javax.jms.JMSException;
 import javax.jms.Queue;
-//import org.apache.activemq.artemis.jms.client.ActiveMQQueue;
+import javax.jms.TextMessage;
 import java.util.Collections;
 import java.util.List;
 import java.util.stream.Collectors;
@@ -33,22 +35,62 @@ public class QueueService {
                 .collect(Collectors.toList());
     }
 
-    public List<String> getAllMessages(String queueName) {
+    public List<JmsMessage> getMessages(String queueName) {
         Queue queue = queueRepository.getQueue(queueName);
         if (queue == null) {
             return Collections.emptyList();
         }
-//        return queueRepository.findMessages(queue);
-        return queueRepository.findAllMessages(queue);
+        List<TextMessage> textMessages = queueRepository.findAllMessages(queue);
+        return textMessages.stream().map(t -> {
+            try {
+                return JmsMessageBuilder.newBuilder()
+                        .addMessageID(t.getJMSMessageID())
+                        .addCorrelationID(t.getJMSCorrelationID())
+                        .addTimestamp(t.getJMSTimestamp())
+                        .addMessage(t.getText())
+                        .build();
+            } catch (JMSException e) {
+                e.printStackTrace();
+                return null;
+            }
+        })
+                .collect(Collectors.toList());
     }
 
-    public boolean addMessage(String queueName, String message) {
+    public JmsMessage getMessage(String queueName, String messageID) {
         Queue queue = queueRepository.getQueue(queueName);
         if (queue == null) {
-            return false;
+            return null;
         }
-        queueRepository.insertMessage(queue, message);
-        return true;
+        TextMessage textMessage = queueRepository.findMessageByID(queue, messageID);
+        try {
+            return textMessage == null ? null :
+                    JmsMessageBuilder.newBuilder()
+                            .addMessageID(textMessage.getJMSMessageID())
+                            .addCorrelationID(textMessage.getJMSCorrelationID())
+                            .addTimestamp(textMessage.getJMSTimestamp())
+                            .addMessage(textMessage.getText())
+                            .build();
+        } catch (JMSException e) {
+            e.printStackTrace();
+            return null;
+        }
+    }
+
+    public String addMessage(String queueName, String message) {
+        Queue queue = queueRepository.getQueue(queueName);
+        if (queue == null) {
+            return null;
+        }
+        return queueRepository.insertMessage(queue, message);
+    }
+
+    public void deleteMessage(String queueName, String message) {
+        Queue queue = queueRepository.getQueue(queueName);
+        if (queue == null) {
+            return;
+        }
+        queueRepository.deleteMessage(queue, message);
     }
 
     public int countMessages(String queueName) {

@@ -16,6 +16,14 @@ public abstract class BaseRepository<T> {
             return find(ctx, type, null, 1);
         } catch (NamingException e) {
             e.printStackTrace();
+        } finally {
+            if (ctx != null) {
+                try {
+                    ctx.close();
+                } catch (NamingException e) {
+                    LOGGER.warning(e.getMessage());
+                }
+            }
         }
         return Collections.emptyList();
     }
@@ -33,7 +41,6 @@ public abstract class BaseRepository<T> {
         if (contextPath == null)
             contextPath = "";
         try {
-            ctx = new InitialContext();
             NamingEnumeration<NameClassPair> list = ctx.list(contextPath);
             while (list.hasMoreElements() && dept < 8) {
                 NameClassPair nameClassPair = list.next();
@@ -50,14 +57,6 @@ public abstract class BaseRepository<T> {
             }
         } catch (NamingException e) {
             LOGGER.warning("JNDI namespace " + contextPath + " error: " + e.getMessage());
-        } finally {
-            if (ctx != null) {
-                try {
-                    ctx.close();
-                } catch (NamingException e) {
-                    LOGGER.warning(e.getMessage());
-                }
-            }
         }
         return result;
     }

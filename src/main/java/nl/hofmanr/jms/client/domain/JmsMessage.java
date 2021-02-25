@@ -2,7 +2,7 @@ package nl.hofmanr.jms.client.domain;
 
 import java.time.LocalDateTime;
 
-public class QueueMessage {
+public class JmsMessage {
     private String messageID;
     private String correlationID;
     private LocalDateTime timestamp;
