@@ -1,5 +1,7 @@
 package nl.hofmanr.jms.client.repository;
 
+import nl.hofmanr.jms.client.exception.DataAccessException;
+
 import javax.enterprise.context.ApplicationScoped;
 import javax.inject.Inject;
 import javax.jms.*;
@@ -9,12 +11,10 @@ import java.util.Enumeration;
 import java.util.List;
 import java.util.concurrent.atomic.AtomicReference;
 import java.util.function.Function;
-import java.util.logging.Logger;
 import java.util.stream.Collectors;
 
 @ApplicationScoped
 public class QueueRepository extends BaseRepository<Queue> {
-    private static final Logger LOGGER = Logger.getLogger(QueueRepository.class.getName());
 
     @Inject
     ConnectionFactoryRepository connectionFactoryRepository;
@@ -34,11 +34,10 @@ public class QueueRepository extends BaseRepository<Queue> {
                     try {
                         return q.getQueueName().equalsIgnoreCase(queueName);
                     } catch (JMSException e) {
-                        LOGGER.severe(e.getMessage());
+                        throw new DataAccessException("Error retrieving queue", e);
                     }
-                    return false;
                 })
-                .findFirst().orElse(null);
+                .findFirst().orElseThrow(() -> new DataAccessException("No queue with name " + queueName));
     }
 
     private <T extends Session, R> R execute(Function<T, R> function) {
@@ -54,11 +53,10 @@ public class QueueRepository extends BaseRepository<Queue> {
             return function.apply((T) session);
 
         } catch (JMSException e) {
-            e.printStackTrace();
+            throw new DataAccessException("Error executing query", e);
         } finally {
             tearDown(connection, session);
         }
-        return null;
     }
 
     public List<TextMessage> findAllMessages(Queue queue) {
@@ -71,9 +69,8 @@ public class QueueRepository extends BaseRepository<Queue> {
                         .map(m -> (TextMessage) m)
                         .collect(Collectors.toList());
             } catch (JMSException e) {
-                e.printStackTrace();
+                throw new DataAccessException("Error retrieving messages from queue", e);
             }
-            return Collections.emptyList();
         };
 
         return execute(browseQueue);
@@ -97,9 +94,8 @@ public class QueueRepository extends BaseRepository<Queue> {
                         .map(m -> (TextMessage) m)
                         .findFirst().orElse(null);
             } catch (JMSException e) {
-                e.printStackTrace();
+                throw new DataAccessException("Error retrieving message with ID " + messageID + " from queue", e);
             }
-            return null;
         };
 
         return execute(browseQueue);
@@ -118,9 +114,8 @@ public class QueueRepository extends BaseRepository<Queue> {
                 messageProducer.send(textMessage);
                 return atomicReference.get().getJMSMessageID();
             } catch (JMSException e) {
-                e.printStackTrace();
+                throw new DataAccessException("Error sending message to queue", e);
             }
-            return null;
         };
 
         return execute(sendMessage);
@@ -135,8 +130,7 @@ public class QueueRepository extends BaseRepository<Queue> {
                 if (message == null)
                     return false;
             } catch (JMSException e) {
-                e.printStackTrace();
-                return false;
+                throw new DataAccessException("Error receiving message from queue", e);
             }
             return true;
         };
@@ -150,9 +144,8 @@ public class QueueRepository extends BaseRepository<Queue> {
                 Enumeration e = queueBrowser.getEnumeration();
                 return Collections.list(e).size();
             } catch (JMSException e) {
-                e.printStackTrace();
+                throw new DataAccessException("Error count messages", e);
             }
-            return 0;
         };
 
         return execute(getQueueSize);
@@ -163,8 +156,7 @@ public class QueueRepository extends BaseRepository<Queue> {
             try (MessageConsumer messageConsumer = session.createConsumer(queue)) {
                 while (messageConsumer.receiveNoWait() != null) ;
             } catch (JMSException e) {
-                e.printStackTrace();
-                return false;
+                throw new DataAccessException("Error deleting messages from queue", e);
             }
             return true;
         };
@@ -181,7 +173,7 @@ public class QueueRepository extends BaseRepository<Queue> {
                 connection.close();
             }
         } catch (JMSException e) {
-            e.printStackTrace();
+            throw new DataAccessException("Error closing resources", e);
         }
     }
 

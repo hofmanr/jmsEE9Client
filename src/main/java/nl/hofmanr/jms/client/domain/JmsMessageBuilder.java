@@ -8,7 +8,7 @@ public class JmsMessageBuilder {
     private String messageID;
     private String correlationID;
     private LocalDateTime timestamp;
-    private String message;
+    private LocalDateTime expiration;
 
     public static JmsMessageBuilder newBuilder() {
         return new JmsMessageBuilder();
@@ -26,12 +26,14 @@ public class JmsMessageBuilder {
 
     public JmsMessageBuilder addTimestamp(Long timestamp) {
         this.timestamp = LocalDateTime.ofInstant(Instant.ofEpochMilli(timestamp),
-                TimeZone.getDefault().toZoneId());;
+                TimeZone.getDefault().toZoneId());
         return this;
     }
 
-    public JmsMessageBuilder addMessage(String message) {
-        this.message = message;
+    public JmsMessageBuilder addExpiration(Long expiration) {
+        if (expiration != null)
+            this.expiration = LocalDateTime.ofInstant(Instant.ofEpochMilli(expiration),
+                    TimeZone.getDefault().toZoneId());
         return this;
     }
 
@@ -40,7 +42,7 @@ public class JmsMessageBuilder {
         jmsMessage.setMessageID(this.messageID);
         jmsMessage.setCorrelationID(this.correlationID);
         jmsMessage.setTimestamp(this.timestamp);
-        jmsMessage.setMessage(this.message);
+        jmsMessage.setExpiration(this.expiration);
         return jmsMessage;
     }
 }

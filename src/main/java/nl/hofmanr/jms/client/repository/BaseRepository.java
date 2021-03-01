@@ -1,8 +1,9 @@
 package nl.hofmanr.jms.client.repository;
 
+import nl.hofmanr.jms.client.exception.DataAccessException;
+
 import javax.naming.*;
 import java.util.ArrayList;
-import java.util.Collections;
 import java.util.List;
 import java.util.logging.Logger;
 
@@ -15,17 +16,16 @@ public abstract class BaseRepository<T> {
             ctx = new InitialContext();
             return find(ctx, type, null, 1);
         } catch (NamingException e) {
-            e.printStackTrace();
+            throw new DataAccessException("Error resources with type " + type.getSimpleName(), e);
         } finally {
             if (ctx != null) {
                 try {
                     ctx.close();
                 } catch (NamingException e) {
-                    LOGGER.warning(e.getMessage());
+                    throw new DataAccessException("Error closing resources", e);
                 }
             }
         }
-        return Collections.emptyList();
     }
 
     /**
@@ -56,7 +56,7 @@ public abstract class BaseRepository<T> {
                 }
             }
         } catch (NamingException e) {
-            LOGGER.warning("JNDI namespace " + contextPath + " error: " + e.getMessage());
+            throw new DataAccessException("Naming exception JNDI namespace " + contextPath, e);
         }
         return result;
     }

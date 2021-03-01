@@ -1,112 +1,100 @@
 package nl.hofmanr.jms.client.service;
 
 import nl.hofmanr.jms.client.domain.JmsMessage;
-import nl.hofmanr.jms.client.domain.JmsMessageBuilder;
+import nl.hofmanr.jms.client.domain.JmsMessageAssembler;
+import nl.hofmanr.jms.client.domain.QueueAssembler;
+import nl.hofmanr.jms.client.exception.DataAccessException;
+import nl.hofmanr.jms.client.exception.ServiceException;
 import nl.hofmanr.jms.client.repository.ConnectionFactoryRepository;
 import nl.hofmanr.jms.client.repository.QueueRepository;
 
 import javax.inject.Inject;
-import javax.jms.JMSException;
 import javax.jms.Queue;
 import javax.jms.TextMessage;
-import java.util.Collections;
 import java.util.List;
 import java.util.stream.Collectors;
 
 public class QueueService {
 
     @Inject
-    QueueRepository queueRepository;
+    private QueueRepository queueRepository;
+
+    @Inject
+    private QueueAssembler queueAssembler;
+
+    @Inject
+    private JmsMessageAssembler jmsMessageAssembler;
 
     @Inject
     ConnectionFactoryRepository connectionFactoryRepository;
 
     public List<String> getQueues() {
-        connectionFactoryRepository.findFirst();
-        return queueRepository.getQueues().stream()
-                .map(q -> {
-                    try {
-                        return q.getQueueName();
-                    } catch (JMSException e) {
-                        e.printStackTrace();
-                    }
-                    return null;
-                })
-                .collect(Collectors.toList());
+        try {
+            connectionFactoryRepository.findFirst();
+            return queueRepository.getQueues().stream()
+                    .map(queueAssembler::toName)
+                    .collect(Collectors.toList());
+        } catch (DataAccessException e) {
+            throw new ServiceException("Error getting queues", e);
+        }
     }
 
     public List<JmsMessage> getMessages(String queueName) {
-        Queue queue = queueRepository.getQueue(queueName);
-        if (queue == null) {
-            return Collections.emptyList();
+        try {
+            Queue queue = queueRepository.getQueue(queueName);
+            List<TextMessage> textMessages = queueRepository.findAllMessages(queue);
+            return textMessages.stream()
+                    .map(jmsMessageAssembler::toJmsMessage)
+                    .collect(Collectors.toList());
+        } catch (DataAccessException e) {
+            throw new ServiceException("Error getting messages from queue " + queueName, e);
         }
-        List<TextMessage> textMessages = queueRepository.findAllMessages(queue);
-        return textMessages.stream().map(t -> {
-            try {
-                return JmsMessageBuilder.newBuilder()
-                        .addMessageID(t.getJMSMessageID())
-                        .addCorrelationID(t.getJMSCorrelationID())
-                        .addTimestamp(t.getJMSTimestamp())
-                        .addMessage(t.getText())
-                        .build();
-            } catch (JMSException e) {
-                e.printStackTrace();
-                return null;
-            }
-        })
-                .collect(Collectors.toList());
     }
 
     public JmsMessage getMessage(String queueName, String messageID) {
-        Queue queue = queueRepository.getQueue(queueName);
-        if (queue == null) {
-            return null;
-        }
-        TextMessage textMessage = queueRepository.findMessageByID(queue, messageID);
         try {
-            return textMessage == null ? null :
-                    JmsMessageBuilder.newBuilder()
-                            .addMessageID(textMessage.getJMSMessageID())
-                            .addCorrelationID(textMessage.getJMSCorrelationID())
-                            .addTimestamp(textMessage.getJMSTimestamp())
-                            .addMessage(textMessage.getText())
-                            .build();
-        } catch (JMSException e) {
-            e.printStackTrace();
-            return null;
+            Queue queue = queueRepository.getQueue(queueName);
+            TextMessage textMessage = queueRepository.findMessageByID(queue, messageID);
+            return textMessage == null ? null : jmsMessageAssembler.toJmsMessage(textMessage);
+        } catch (DataAccessException e) {
+            throw new ServiceException("Error getting message from queue " + queueName + " with ID " + messageID, e);
         }
     }
 
     public String addMessage(String queueName, String message) {
-        Queue queue = queueRepository.getQueue(queueName);
-        if (queue == null) {
-            return null;
+        try {
+            Queue queue = queueRepository.getQueue(queueName);
+            return queueRepository.insertMessage(queue, message);
+        } catch (DataAccessException e) {
+            throw new ServiceException("Error add message to queue " + queueName, e);
         }
-        return queueRepository.insertMessage(queue, message);
     }
 
     public void deleteMessage(String queueName, String message) {
-        Queue queue = queueRepository.getQueue(queueName);
-        if (queue == null) {
-            return;
+        try {
+            Queue queue = queueRepository.getQueue(queueName);
+            queueRepository.deleteMessage(queue, message);
+        } catch (DataAccessException e) {
+            throw new ServiceException("Error deleting message from queue " + queueName, e);
         }
-        queueRepository.deleteMessage(queue, message);
     }
 
     public int countMessages(String queueName) {
-        Queue queue = queueRepository.getQueue(queueName);
-        if (queue == null) {
-            return 0;
+        try {
+            Queue queue = queueRepository.getQueue(queueName);
+            return queueRepository.count(queue);
+        } catch (DataAccessException e) {
+            throw new ServiceException("Error counting messages on queue " + queueName, e);
         }
-        return queueRepository.count(queue);
     }
 
     public void deleteMessages(String queueName) {
-        Queue queue = queueRepository.getQueue(queueName);
-        if (queue == null) {
-            return;
+        try {
+            Queue queue = queueRepository.getQueue(queueName);
+            queueRepository.deleteMessages(queue);
+        } catch (DataAccessException e) {
+            throw new ServiceException("Error deleting all messages on queue " + queueName, e);
         }
-        queueRepository.deleteMessages(queue);
     }
 
 }

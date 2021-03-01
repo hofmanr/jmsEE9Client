@@ -6,7 +6,7 @@ public class JmsMessage {
     private String messageID;
     private String correlationID;
     private LocalDateTime timestamp;
-    private String message;
+    private LocalDateTime expiration;
 
     public String getMessageID() {
         return messageID;
@@ -32,11 +32,11 @@ public class JmsMessage {
         this.timestamp = timestamp;
     }
 
-    public String getMessage() {
-        return message;
+    public LocalDateTime getExpiration() {
+        return expiration;
     }
 
-    public void setMessage(String message) {
-        this.message = message;
+    public void setExpiration(LocalDateTime expiration) {
+        this.expiration = expiration;
     }
 }
