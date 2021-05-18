@@ -22,6 +22,18 @@
     <version.javaee>7.0</version.javaee>
   </properties>
 
+<!--  <repositories>-->
+<!--    <repository>-->
+<!--      <id>central</id>-->
+<!--      <name>Central Repository</name>-->
+<!--      <url>https://repo1.maven.org/maven2</url>-->
+<!--      <layout>default</layout>-->
+<!--      <snapshots>-->
+<!--        <enabled>false</enabled>-->
+<!--      </snapshots>-->
+<!--    </repository>-->
+<!--  </repositories>-->
+
   <dependencies>
     <!-- Nodig voor JMS -->
     <dependency>
@@ -37,12 +49,26 @@
       <version>${version.javaee}</version>
       <scope>provided</scope>
     </dependency>
+
     <dependency>
       <groupId>junit</groupId>
       <artifactId>junit</artifactId>
       <version>4.11</version>
       <scope>test</scope>
     </dependency>
+
+    <dependency>
+      <groupId>com.github.eirslett</groupId>
+      <artifactId>frontend-maven-plugin</artifactId>
+      <version>1.11.3</version>
+    </dependency>
+
+    <dependency>
+      <groupId>com.fasterxml.jackson.datatype</groupId>
+      <artifactId>jackson-datatype-jsr310</artifactId>
+      <version>2.10.2</version>
+    </dependency>
+
   </dependencies>
 
   <build>
@@ -106,6 +132,84 @@
           <target>8</target>
         </configuration>
       </plugin>
+      <!--
+         1. used for local installation of node and npm
+         2. to install dependencies with npm install
+         3. building the application
+       -->
+      <plugin>
+        <groupId>com.github.eirslett</groupId>
+        <artifactId>frontend-maven-plugin</artifactId>
+        <version>1.11.3</version>
+        <configuration>
+          <nodeVersion>v15.12.0</nodeVersion>
+          <npmVersion>7.11.1</npmVersion>
+          <workingDirectory>src/main/ts/frontend</workingDirectory>
+        </configuration>
+        <executions>
+          <execution>
+            <id>Install node and npm locally to the project</id>
+            <goals>
+              <goal>install-node-and-npm</goal>
+            </goals>
+          </execution>
+          <execution>
+            <id>npm install</id>
+            <goals>
+              <goal>npm</goal>
+            </goals>
+          </execution>
+          <execution>
+            <id>Build frontend</id>
+            <goals>
+              <goal>npm</goal>
+            </goals>
+            <configuration>
+              <arguments>run build</arguments>
+            </configuration>
+          </execution>
+        </executions>
+      </plugin>
+      <plugin>
+        <groupId>org.apache.maven.plugins</groupId>
+        <artifactId>maven-resources-plugin</artifactId>
+        <executions>
+          <execution>
+            <id>Copy frontend build to target</id>
+            <phase>process-resources</phase>
+            <goals>
+              <goal>copy-resources</goal>
+            </goals>
+            <configuration>
+<!--              <outputDirectory>${basedir}/target/classes/resources</outputDirectory>-->
+              <outputDirectory>${basedir}/target/resources</outputDirectory>
+              <resources>
+                <resource>
+                  <directory>${basedir}/src/main/ts/frontend/build</directory>
+                  <filtering>true</filtering>
+                </resource>
+              </resources>
+            </configuration>
+          </execution>
+        </executions>
+      </plugin>
+
+      <plugin>
+        <groupId>org.apache.maven.plugins</groupId>
+        <artifactId>maven-war-plugin</artifactId>
+        <configuration>
+          <webResources>
+            <resource>
+              <directory>${basedir}/target/resources</directory>
+              <filtering>false</filtering>
+<!--              <excludes>-->
+<!--                <exclude>manifest.json</exclude>-->
+<!--              </excludes>-->
+            </resource>
+          </webResources>
+        </configuration>
+      </plugin>
+
     </plugins>
   </build>
 </project>

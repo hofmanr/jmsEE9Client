@@ -1,6 +1,8 @@
 package nl.hofmanr.jms.client;
 
 import nl.hofmanr.jms.client.domain.JmsMessage;
+import nl.hofmanr.jms.client.domain.JmsPayload;
+import nl.hofmanr.jms.client.domain.JmsQueue;
 import nl.hofmanr.jms.client.service.QueueService;
 
 import javax.inject.Inject;
@@ -23,7 +25,7 @@ public class JmsClientEndpoint {
 
     @GET
     public Response getQueues() {
-        List<String> queues = queueService.getQueues();
+        List<JmsQueue> queues = queueService.getQueues();
         if (queues.size() == 0) {
             return Response.noContent().build();
         }
@@ -58,11 +60,11 @@ public class JmsClientEndpoint {
     @GET
     @Path("/{queue}/messages/{messageID}")
     public Response getMessage(@PathParam("queue") String queueName, @PathParam("messageID") String messageID) {
-        JmsMessage message = queueService.getMessage(queueName, messageID);
-        if (message == null) {
+        JmsPayload payload= queueService.getMessage(queueName, messageID);
+        if (payload == null) {
             return Response.noContent().build();
         }
-        return Response.ok(message).build();
+        return Response.ok(payload).build();
     }
 
     @POST
