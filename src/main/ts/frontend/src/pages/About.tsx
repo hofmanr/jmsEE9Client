@@ -12,7 +12,7 @@ export default function AboutPg() {
         <main>
             <div className={classes.container}>
                 <Container maxWidth="md">
-                    <Info title="About" message="Demo app build with React." />
+                    <Info message="Demo app build with React." />
                     <Typography variant="h5">Run the App</Typography>
                     <Typography variant="body1" gutterBottom>
         Lorem ipsum dolor sit amet, consectetur adipisicing elit. Quos blanditiis tenetur

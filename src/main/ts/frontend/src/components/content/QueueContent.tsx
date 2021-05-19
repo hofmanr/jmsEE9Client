@@ -173,6 +173,7 @@ export default function QueueContent({ busy, queue, messages, onRefresh, onAddMe
                       aria-checked={isItemSelected}
                       tabIndex={-1}
                       selected={isItemSelected}
+                      className={classes.tableRow} // change background when selected
                     >
                       <TableCell padding="checkbox" onClick={(event) => handleClick(event, message.messageID)}>
                         <Checkbox

@@ -19,13 +19,13 @@ const useToolbarStyles = makeStyles((theme: Theme) =>
     highlight:
       theme.palette.type === 'light'
         ? {
-            color: theme.palette.primary.main,
-            backgroundColor: lighten(theme.palette.primary.light, 0.85),
-          }
+          color: theme.palette.primary.main,
+          backgroundColor: lighten(theme.palette.primary.light, 0.85),
+        }
         : {
-            color: theme.palette.text.primary,
-            backgroundColor: theme.palette.secondary.dark,
-          },
+          color: theme.palette.text.primary,
+          backgroundColor: theme.palette.secondary.dark,
+        },
     title: {
       flex: '1 1 100%',
     },
@@ -60,26 +60,26 @@ const EnhancedTableToolbar = (props: EnhancedTableToolbarProps) => {
           {busy ? (
             <CircularProgress size={20} disableShrink />
           ) : (
-            <div>&nbsp;</div>
+            <div>Content</div>
           )}
         </Typography>
       )}
+      <IconButton aria-label="refresh" disabled={!queueSelected} onClick={onRefresh}>
         <Tooltip title="Refresh">
-          <IconButton aria-label="refresh" disabled={!queueSelected} onClick={onRefresh}>
-            <SyncIcon />
-          </IconButton>
+          <SyncIcon />
         </Tooltip>
+      </IconButton>
+      <IconButton aria-label="add" disabled={!queueSelected} onClick={onAddMessage}>
         <Tooltip title="Add">
-          <IconButton aria-label="add" disabled={!queueSelected} onClick={onAddMessage}>
-            <PostAddIcon />
-          </IconButton>
+          <PostAddIcon />
         </Tooltip>
+      </IconButton>
+      <IconButton aria-label="delete" disabled={numSelected <= 0} onClick={onDelete}>
         <Tooltip title="Delete">
-          <IconButton aria-label="delete" disabled={numSelected <= 0} onClick={onDelete}>
-            <DeleteIcon />
-          </IconButton>
+          <DeleteIcon />
         </Tooltip>
-     </Toolbar>
+      </IconButton>
+    </Toolbar>
   );
 };
 

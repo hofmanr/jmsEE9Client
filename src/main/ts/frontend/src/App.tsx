@@ -10,11 +10,15 @@ import AboutPg from './pages/About';
 import QueuePg from './pages/QueuePg';
 
 const App = () => {
+    const [title, setTitle] = React.useState<string>('');
+
+    const handleSetTitle = (title: string) => setTitle(title);
+
     return (
         <div>
            <Router>
-                <ToolBar />
-                <Layout>
+                <ToolBar title={title} />
+                <Layout title={title} onChangeTitle={handleSetTitle}>
                     <Switch>
                         <Route exact path="/">
                             <QueuePg />

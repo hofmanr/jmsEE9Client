@@ -102,8 +102,8 @@ function QueuePg() {
     return (
         <main>
             <div className={classes.container}>
-                <Container maxWidth="sm">
-                    <Info title="Queue Details" message="Show, add and delete messages from queues." />
+                <Container maxWidth="md">
+                    <Info message="Show, add and delete messages from queues." />
                     <SelectQueue busy={busySelect} queues={queues} onRefresh={handleRefreshQueues} onSelectQueue={onSelectQueue} />
                 </Container>
             </div>

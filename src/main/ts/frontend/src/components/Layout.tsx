@@ -1,4 +1,4 @@
-import React from 'react';
+import React, { useEffect } from 'react';
 import useStyles from '../Styles';
 import Drawer from '@material-ui/core/Drawer';
 import Typography from '@material-ui/core/Typography';
@@ -12,15 +12,23 @@ import { useHistory, useLocation } from 'react-router';
 import Divider from '@material-ui/core/Divider';
 
 interface LayoutProps {
+    title: string;
+    onChangeTitle: (title: string) => void;
     children: JSX.Element;
 }
 
-export default function Layout( { children }: LayoutProps)  {
+interface MenuItem {
+    text: string;
+    icon: JSX.Element;
+    path: string;
+}
+
+export default function Layout({ title, onChangeTitle, children }: LayoutProps) {
     const classes = useStyles();
     const history = useHistory();
     const location = useLocation();
 
-    const menuItems = [
+    const menuItems: MenuItem[] = [
         {
             text: "Queues",
             icon: <SubjectOutlined color="primary" />,
@@ -33,6 +41,16 @@ export default function Layout( { children }: LayoutProps)  {
         }
     ];
 
+    // run the first time and every time the user click on an item in the menu
+    useEffect(() => {
+        let item: MenuItem | undefined = menuItems.find((item: MenuItem) => item.path === location.pathname);
+        if (item === undefined) {
+            onChangeTitle("");
+        } else if (item.text !== title) {
+            onChangeTitle(item.text);
+        }
+    }, [title, location, onChangeTitle]); // eslint-disable-line react-hooks/exhaustive-deps
+
     return (
         <div className={classes.root}>
             <Drawer
@@ -43,28 +61,29 @@ export default function Layout( { children }: LayoutProps)  {
                     paper: classes.drawerPaper,
                 }}
             >
-                <div style={{ margin: '10px 20px 10px'}}>
+                <div style={{ margin: '10px 20px 10px' }}>
                     <Typography variant="h5">
-                        Menu
+                        JMS Client
                     </Typography>
                     <Typography variant="caption">
                         v1.0.0
                     </Typography>
                 </div>
                 <Divider />
-                { /* list / links */ }
+                { /* list / links */}
                 <List>
-                    { menuItems.map(item => (
+                    {menuItems.map(item => (
                         <ListItem
                             button
                             key={item.text}
                             onClick={() => history.push(item.path)}
-                            className={location.pathname === item.path ? classes.drawerItemActive : undefined}
+                            style={ { background: `${location.pathname === item.path ? '#e4e4e4' : '#ffffff'}` } }
+                            // does not work: className={location.pathname === item.path ? classes.drawerItemActive : classes.drawerItemInactive}
                         >
                             <ListItemIcon>{item.icon}</ListItemIcon>
                             <ListItemText primary={item.text} />
                         </ListItem>
-                    )) }
+                    ))}
                 </List>
             </Drawer>
             <div className={classes.page}>

@@ -6,7 +6,11 @@ import QueueIcon from '@material-ui/icons/Queue';
 import useStyles from '../Styles';
 import { ClassNameMap } from '@material-ui/styles';
 
-const ToolBar = () => {
+interface ToolBarProps {
+    title: string;
+}
+
+const ToolBar = ({ title }: ToolBarProps ) => {
     const classes: ClassNameMap = useStyles();
     return (
         <div className={classes.toolBar}>
@@ -14,7 +18,7 @@ const ToolBar = () => {
                 <Toolbar>
                     <QueueIcon className={classes.toolbarIcon} />
                     <Typography variant="h6" className={classes.toolbarTitle}>
-                        JMS Client App
+                        {title}
                     </Typography>
                 </Toolbar>
             </AppBar>

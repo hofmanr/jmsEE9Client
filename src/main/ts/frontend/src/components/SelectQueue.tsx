@@ -39,7 +39,7 @@ function SelectQueue({ busy, queues, onRefresh, onSelectQueue }: SelectQueueProp
 
     return (
         <div>
-            <Grid container spacing={2} justify="center">
+            <Grid container spacing={2} justify="flex-start">
                 <Grid item>
                     <FormControl className={classes.formControl} style={{minWidth: 150}}>
                         <InputLabel id="queues-label">Queue</InputLabel>
