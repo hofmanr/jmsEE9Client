@@ -59,7 +59,6 @@ function QueuePg() {
     };
 
     const handleAddMessage = (payload: string) => {
-        console.log('post new record to queue', queue, payload);
         postPayload(queue!, payload);
     };
 

@@ -13,6 +13,7 @@ import Divider from '@material-ui/core/Divider';
 
 interface LayoutProps {
     title: string;
+    basePath: string;
     onChangeTitle: (title: string) => void;
     children: JSX.Element;
 }
@@ -23,7 +24,7 @@ interface MenuItem {
     path: string;
 }
 
-export default function Layout({ title, onChangeTitle, children }: LayoutProps) {
+export default function Layout({ title, basePath, onChangeTitle, children }: LayoutProps) {
     const classes = useStyles();
     const history = useHistory();
     const location = useLocation();
@@ -32,12 +33,12 @@ export default function Layout({ title, onChangeTitle, children }: LayoutProps) 
         {
             text: "Queues",
             icon: <SubjectOutlined color="primary" />,
-            path: "/"
+            path: `${basePath}/`
         },
         {
             text: "About",
             icon: <InfoOutlinedIcon color="primary" />,
-            path: "/about"
+            path: `${basePath}/about`
         }
     ];
 
@@ -78,7 +79,7 @@ export default function Layout({ title, onChangeTitle, children }: LayoutProps) 
                             key={item.text}
                             onClick={() => history.push(item.path)}
                             style={ { background: `${location.pathname === item.path ? '#e4e4e4' : '#ffffff'}` } }
-                            // does not work: className={location.pathname === item.path ? classes.drawerItemActive : classes.drawerItemInactive}
+                            // does not work: className={ location.pathname === item.path ? classes.drawerItemActive : classes.drawerItemInactive }
                         >
                             <ListItemIcon>{item.icon}</ListItemIcon>
                             <ListItemText primary={item.text} />

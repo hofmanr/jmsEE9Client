@@ -32,7 +32,6 @@ function SelectQueue({ busy, queues, onRefresh, onSelectQueue }: SelectQueueProp
     };
 
     if (prevQueues !== queues) {
-        console.log("setQueues", queues);
         setPrevQueues(queues);
         setQueue('');
     }
