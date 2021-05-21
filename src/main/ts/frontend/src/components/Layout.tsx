@@ -36,6 +36,11 @@ export default function Layout({ title, basePath, onChangeTitle, children }: Lay
             path: `${basePath}/`
         },
         {
+            text: "Swagger",
+            icon: <SubjectOutlined color="primary" />,
+            path: `${basePath}/swagger`
+        },
+        {
             text: "About",
             icon: <InfoOutlinedIcon color="primary" />,
             path: `${basePath}/about`

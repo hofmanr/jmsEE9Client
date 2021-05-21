@@ -1,6 +1,11 @@
 package nl.hofmanr.jms.client.domain;
 
+import io.swagger.annotations.ApiModel;
+import io.swagger.annotations.ApiModelProperty;
+
+@ApiModel(value = "Payload", description = "The payload of an entry")
 public class JmsPayload {
+    @ApiModelProperty("The payload itself")
     private String payload;
 
     public JmsPayload() {

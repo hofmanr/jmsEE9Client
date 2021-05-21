@@ -41,7 +41,7 @@ export default function QueueContent({ busy, queue, messages, onRefresh, onAddMe
   const [orderBy, setOrderBy] = React.useState<keyof Message>('timestamp');
   const [selected, setSelected] = React.useState<string[]>([]);
   const [page, setPage] = React.useState(0);
-  const [rowsPerPage, setRowsPerPage] = React.useState(5);
+  const [rowsPerPage, setRowsPerPage] = React.useState(10);
   const [payload, setPayload] = React.useState<Payload>(); // for showing the payload in dialog
   const [alertDialogOpen, setAlertDialogOpen] = React.useState(false);
   const [dialogEditMode, setDialogEditMode] = React.useState(false);

@@ -20,6 +20,9 @@
     <maven.compiler.target>1.7</maven.compiler.target>
     <version.java>1.8</version.java>
     <version.javaee>7.0</version.javaee>
+    <version.swagger>1.5.9</version.swagger>
+    <!-- Swagger plugins -->
+    <version.swagger.plugin>3.1.4</version.swagger.plugin>
   </properties>
 
 <!--  <repositories>-->
@@ -55,6 +58,12 @@
       <artifactId>junit</artifactId>
       <version>4.11</version>
       <scope>test</scope>
+    </dependency>
+
+    <dependency>
+      <groupId>io.swagger</groupId>
+      <artifactId>swagger-annotations</artifactId>
+      <version>${version.swagger}</version>
     </dependency>
 
     <dependency>
@@ -210,6 +219,56 @@
         </configuration>
       </plugin>
 
+      <!-- see https://github.com/kongchen/swagger-maven-plugin -->
+      <plugin>
+        <groupId>com.github.kongchen</groupId>
+        <artifactId>swagger-maven-plugin</artifactId>
+        <version>${version.swagger.plugin}</version>
+        <configuration>
+          <apiSources>
+            <apiSource>
+              <springmvc>false</springmvc>
+              <locations>nl.hofmanr.jms.client</locations>
+              <schemes>http,https</schemes>
+              <host>localhost:8080</host>
+              <basePath>/jmsRestClient/api</basePath>
+              <outputFormats>yaml,json</outputFormats>
+              <info>
+                <title>JMS Client APIs</title>
+                <version>1.0.0</version>
+                <description>JMS Rest API exposes the Java EE back-end to the front-end</description>
+                <contact>
+                  <email>rhofman14@gmail.com</email>
+                  <name>Rinus Hofman</name>
+                  <url>http://localhost:8080</url>
+                </contact>
+                <license>
+                  <url>http://www.license.com</url>
+                  <name>License name</name>
+                </license>
+              </info>
+              <swaggerDirectory>${basedir}/src/main/webapp</swaggerDirectory>
+              <attachSwaggerArtifact>true</attachSwaggerArtifact>
+            </apiSource>
+          </apiSources>
+        </configuration>
+        <executions>
+          <execution>
+            <phase>compile</phase>
+            <goals>
+              <goal>generate</goal>
+            </goals>
+          </execution>
+        </executions>
+<!--        <dependencies>-->
+<!--          &lt;!&ndash; Adding dependency to swagger-hibernate-validations to enable the BeanValidator as a custom model converter &ndash;&gt;-->
+<!--          <dependency>-->
+<!--            <groupId>io.swagger</groupId>-->
+<!--            <artifactId>swagger-hibernate-validations</artifactId>-->
+<!--            <version>${version.swagger}</version>-->
+<!--          </dependency>-->
+<!--        </dependencies>-->
+      </plugin>
     </plugins>
   </build>
 </project>
