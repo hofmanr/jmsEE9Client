@@ -8,6 +8,7 @@ import Layout from './components/Layout';
 import ToolBar from './components/ToolBar';
 import AboutPg from './pages/About';
 import QueuePg from './pages/QueuePg';
+import SwaggerPg from './pages/SwaggerPg';
 
 const App = () => {
     const [title, setTitle] = React.useState<string>('');
@@ -30,6 +31,9 @@ const App = () => {
                         {/* original <Route exact path="/"> */}
                         <Route exact path={`${basePath}/`}>
                             <QueuePg />
+                        </Route>
+                        <Route exact path={`${basePath}/swagger`}>
+                            <SwaggerPg />
                         </Route>
                         <Route exact path={`${basePath}/about`}>
                             <AboutPg />
