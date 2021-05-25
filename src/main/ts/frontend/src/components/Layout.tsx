@@ -8,6 +8,7 @@ import ListItemIcon from '@material-ui/core/ListItemIcon';
 import ListItemText from '@material-ui/core/ListItemText';
 import { SubjectOutlined } from '@material-ui/icons';
 import InfoOutlinedIcon from '@material-ui/icons/InfoOutlined';
+import DynamicFeedOutlinedIcon from '@material-ui/icons/DynamicFeedOutlined';
 import { useHistory, useLocation } from 'react-router';
 import Divider from '@material-ui/core/Divider';
 
@@ -37,7 +38,7 @@ export default function Layout({ title, basePath, onChangeTitle, children }: Lay
         },
         {
             text: "Swagger",
-            icon: <SubjectOutlined color="primary" />,
+            icon: <DynamicFeedOutlinedIcon color="primary" />,
             path: `${basePath}/swagger`
         },
         {

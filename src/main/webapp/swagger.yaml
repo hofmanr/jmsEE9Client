@@ -7,7 +7,6 @@ info:
   contact:
     name: "Rinus Hofman"
     url: "http://localhost:8080"
-    email: "rhofman14@gmail.com"
   license:
     name: "License name"
     url: "http://www.license.com"
@@ -176,7 +175,7 @@ paths:
     delete:
       tags:
       - "Queue"
-      summary: "Deletes all messages from a given queue"
+      summary: "Deletes a message from a given queue"
       description: ""
       operationId: "deletMessage"
       produces:

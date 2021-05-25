@@ -18,7 +18,7 @@ const App = () => {
 
     useEffect(() => {
         let pathname = window.location.pathname; // e.g. /jmsRestClient/ if the URL is http://loclahost:8080/jmsRestClient/
-        // Remove everything after last '/'
+        // Remove everything after last '/' (incl. the routes; e.g. /about)
          setBasePath(pathname.substr(0, pathname.lastIndexOf('/')));
     }, []); // run this only once
 

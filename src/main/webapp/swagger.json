@@ -6,8 +6,7 @@
     "title" : "JMS Client APIs",
     "contact" : {
       "name" : "Rinus Hofman",
-      "url" : "http://localhost:8080",
-      "email" : "rhofman14@gmail.com"
+      "url" : "http://localhost:8080"
     },
     "license" : {
       "name" : "License name",
@@ -215,7 +214,7 @@
       },
       "delete" : {
         "tags" : [ "Queue" ],
-        "summary" : "Deletes all messages from a given queue",
+        "summary" : "Deletes a message from a given queue",
         "description" : "",
         "operationId" : "deletMessage",
         "produces" : [ "application/json" ],

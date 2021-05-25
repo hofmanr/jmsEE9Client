@@ -141,44 +141,8 @@
           <target>8</target>
         </configuration>
       </plugin>
-      <!--
-         1. used for local installation of node and npm
-         2. to install dependencies with npm install
-         3. building the application
-       -->
-      <plugin>
-        <groupId>com.github.eirslett</groupId>
-        <artifactId>frontend-maven-plugin</artifactId>
-        <version>1.11.3</version>
-        <configuration>
-          <nodeVersion>v15.12.0</nodeVersion>
-          <npmVersion>7.11.1</npmVersion>
-          <workingDirectory>src/main/ts/frontend</workingDirectory>
-        </configuration>
-        <executions>
-          <execution>
-            <id>Install node and npm locally to the project</id>
-            <goals>
-              <goal>install-node-and-npm</goal>
-            </goals>
-          </execution>
-          <execution>
-            <id>npm install</id>
-            <goals>
-              <goal>npm</goal>
-            </goals>
-          </execution>
-          <execution>
-            <id>Build frontend</id>
-            <goals>
-              <goal>npm</goal>
-            </goals>
-            <configuration>
-              <arguments>run build</arguments>
-            </configuration>
-          </execution>
-        </executions>
-      </plugin>
+
+      <!-- Copy the frontend build directory to the target directory -->
       <plugin>
         <groupId>org.apache.maven.plugins</groupId>
         <artifactId>maven-resources-plugin</artifactId>
@@ -190,7 +154,6 @@
               <goal>copy-resources</goal>
             </goals>
             <configuration>
-<!--              <outputDirectory>${basedir}/target/classes/resources</outputDirectory>-->
               <outputDirectory>${basedir}/target/resources</outputDirectory>
               <resources>
                 <resource>
@@ -238,7 +201,7 @@
                 <version>1.0.0</version>
                 <description>JMS Rest API exposes the Java EE back-end to the front-end</description>
                 <contact>
-                  <email>rhofman14@gmail.com</email>
+<!--                  <email>email</email>-->
                   <name>Rinus Hofman</name>
                   <url>http://localhost:8080</url>
                 </contact>
@@ -271,4 +234,54 @@
       </plugin>
     </plugins>
   </build>
+
+  <profiles>
+    <profile>
+      <!-- use: mvn compile -Pprod -->
+      <id>prod</id>
+      <build>
+        <plugins>
+          <!--
+          Build the react application; the output can be found in the 'ts/frontend/build' directory
+             1. used for local installation of node and npm
+             2. to install dependencies with npm install
+             3. building the application
+           -->
+          <plugin>
+            <groupId>com.github.eirslett</groupId>
+            <artifactId>frontend-maven-plugin</artifactId>
+            <version>1.11.3</version>
+            <configuration>
+              <nodeVersion>v15.12.0</nodeVersion>
+              <npmVersion>7.11.1</npmVersion>
+              <workingDirectory>src/main/ts/frontend</workingDirectory>
+            </configuration>
+            <executions>
+              <execution>
+                <id>Install node and npm locally to the project</id>
+                <goals>
+                  <goal>install-node-and-npm</goal>
+                </goals>
+              </execution>
+              <execution>
+                <id>npm install</id>
+                <goals>
+                  <goal>npm</goal>
+                </goals>
+              </execution>
+              <execution>
+                <id>Build frontend</id>
+                <goals>
+                  <goal>npm</goal>
+                </goals>
+                <configuration>
+                  <arguments>run build</arguments>
+                </configuration>
+              </execution>
+            </executions>
+          </plugin>
+        </plugins>
+      </build>
+    </profile>
+  </profiles>
 </project>

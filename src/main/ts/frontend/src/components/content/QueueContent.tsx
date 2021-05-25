@@ -18,17 +18,17 @@ import { Queue, Message, Payload } from '../../common/types';
 import { Order, getComparator, stableSort } from './tableUtils';
 import EnhancedTableToolbar from './EnhancedTableToolbar';
 import EnhancedTableHead from './EnhancedTableHead';
-import { fetchPayload} from '../../services/dbServices';
+import { fetchPayload } from '../../services/dbServices';
 
 
 interface QueueContentProps {
-    busy: boolean;
-    queue: Queue | undefined;
-    messages: Message[];
-    onRefresh: () => void;
-    onAddMessage: (payload: string) => void;
-    onDeleteMessages: (ids: string[]) => void;
-} 
+  busy: boolean;
+  queue: Queue | undefined;
+  messages: Message[];
+  onRefresh: () => void;
+  onAddMessage: (payload: string) => void;
+  onDeleteMessages: (ids: string[]) => void;
+}
 
 export default function QueueContent({ busy, queue, messages, onRefresh, onAddMessage, onDeleteMessages }: QueueContentProps) {
   const classes = useStyles();
@@ -94,21 +94,26 @@ export default function QueueContent({ busy, queue, messages, onRefresh, onAddMe
   const isSelected = (id: string) => selected.indexOf(id) !== -1;
 
   const emptyRows = rowsPerPage - Math.min(rowsPerPage, messages.length - page * rowsPerPage);
+  const emptyTableRows = () => {
+    let rows: number[] = new Array<number>(emptyRows);
+    for (let i = 0; i < emptyRows; i++) rows.push(i);
+    return rows;
+  }
 
   const deleteRecords = () => onDeleteMessages(selected); // Action when pressed OK
   const handleDelete = () => setAlertDialogOpen(true); // show dialogbox
-  
+
   const handleAddMessage = () => {
-      setPayload({ payload: ""});
-      setDialogEditMode(true);
-      setDialogOpen(true);
+    setPayload({ payload: "" });
+    setDialogEditMode(true);
+    setDialogOpen(true);
   };
 
   const handleRefresh = () => {
     onRefresh();
   }
 
-  const showPayload = (message : Message) => {
+  const showPayload = (message: Message) => {
     if (queue) {
       fetchPayload(queue!, message).then(pl => {
         setPayload(pl);
@@ -186,10 +191,10 @@ export default function QueueContent({ busy, queue, messages, onRefresh, onAddMe
                       </TableCell>
                       <TableCell padding="none" onClick={(event) => handleClick(event, message.messageID)}>
                         {message.timestamp}
-                        </TableCell>
+                      </TableCell>
                       <TableCell>
                         <Tooltip title="Payload">
-                          <IconButton size="small" aria-label="payload" onClick={() => { showPayload(message)}}>
+                          <IconButton size="small" aria-label="payload" onClick={() => { showPayload(message) }}>
                             <DescriptionOutlinedIcon />
                           </IconButton>
                         </Tooltip>
@@ -197,11 +202,7 @@ export default function QueueContent({ busy, queue, messages, onRefresh, onAddMe
                     </TableRow>
                   );
                 })}
-              {emptyRows > 0 && (
-                <TableRow style={{ height: (41 * emptyRows) }}> {/* small: 33 medium: 53 */}
-                  <TableCell colSpan={4} />
-                </TableRow>
-              )}
+              {emptyTableRows().map((i) => (<TableRow key={i} style={{ height: 41 }}><TableCell style={i < emptyRows-1 ? { borderBottom: "none" } : {}} colSpan={4} /></TableRow>))}
             </TableBody>
           </Table>
         </TableContainer>
@@ -215,21 +216,21 @@ export default function QueueContent({ busy, queue, messages, onRefresh, onAddMe
           onChangeRowsPerPage={handleChangeRowsPerPage}
         />
       </Paper>
-      <AlertDialog 
-        title="Delete selected record(s)?" 
-        message="You cannot undo this operation." 
+      <AlertDialog
+        title="Delete selected record(s)?"
+        message="You cannot undo this operation."
         open={alertDialogOpen}
         setOpen={setAlertDialogOpen}
         action={deleteRecords}
       />
-       <PayloadDialog 
-        title={dialogEditMode ? "Submit New Payload" : "Show Payload"} 
+      <PayloadDialog
+        title={dialogEditMode ? "Submit New Payload" : "Show Payload"}
         payload={payload?.payload}
         open={dialogOpen}
         editMode={dialogEditMode}
         setOpen={setDialogOpen}
         action={onAddMessage}
-      />     
+      />
     </div>
   );
 }

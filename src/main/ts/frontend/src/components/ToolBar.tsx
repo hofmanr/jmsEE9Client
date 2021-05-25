@@ -2,7 +2,6 @@ import React from 'react';
 import AppBar from '@material-ui/core/AppBar';
 import Toolbar from '@material-ui/core/Toolbar';
 import Typography from '@material-ui/core/Typography';
-import QueueIcon from '@material-ui/icons/Queue';
 import useStyles from '../Styles';
 import { ClassNameMap } from '@material-ui/styles';
 
@@ -15,8 +14,7 @@ const ToolBar = ({ title }: ToolBarProps ) => {
     return (
         <div className={classes.toolBar}>
             <AppBar elevation={0} position="static">
-                <Toolbar>
-                    <QueueIcon className={classes.toolbarIcon} />
+                <Toolbar variant="dense">
                     <Typography variant="h6" className={classes.toolbarTitle}>
                         {title}
                     </Typography>
