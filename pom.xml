@@ -16,10 +16,10 @@
   <properties>
     <endorsed.dir>${project.build.directory}/endorsed</endorsed.dir>
     <project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
-    <maven.compiler.source>1.7</maven.compiler.source>
-    <maven.compiler.target>1.7</maven.compiler.target>
-    <version.java>1.8</version.java>
-    <version.javaee>7.0</version.javaee>
+    <maven.compiler.source>11</maven.compiler.source>
+    <maven.compiler.target>11</maven.compiler.target>
+    <version.java>11</version.java>
+    <version.javaee>9.1.0</version.javaee>
     <version.swagger>1.5.9</version.swagger>
     <!-- Swagger plugins -->
     <version.swagger.plugin>3.1.4</version.swagger.plugin>
@@ -40,15 +40,16 @@
   <dependencies>
     <!-- Nodig voor JMS -->
     <dependency>
-      <groupId>javax</groupId>
-      <artifactId>javaee-api</artifactId>
+      <groupId>jakarta.platform</groupId>
+      <artifactId>jakarta.jakartaee-api</artifactId>
       <version>${version.javaee}</version>
       <scope>provided</scope>
     </dependency>
+
     <!-- e.g. Jersey Core -->
     <dependency>
-      <groupId>javax</groupId>
-      <artifactId>javaee-web-api</artifactId>
+      <groupId>jakarta.platform</groupId>
+      <artifactId>jakarta.jakartaee-web-api</artifactId>
       <version>${version.javaee}</version>
       <scope>provided</scope>
     </dependency>

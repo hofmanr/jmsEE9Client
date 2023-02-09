@@ -1,6 +1,7 @@
 # Java JMS Client
 
 This JMS Client must be deployed on an application server. When it's run, it automatically detects the configured JMS queues on the application server.
+This project uses Jakarta EE 9 and is a copy of jmsRestClient, which uses Java EE 8.
 
 The client also contains a frontend. With the frontend you can browse the queues and peak into queues to see the messages that are waiting to be consumed.
 It is also possible to delete messages fron queues and to put messages on queues.

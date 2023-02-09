@@ -6,10 +6,10 @@ import nl.hofmanr.jms.client.exception.ServiceException;
 import nl.hofmanr.jms.client.repository.ConnectionFactoryRepository;
 import nl.hofmanr.jms.client.repository.QueueRepository;
 
-import javax.inject.Inject;
-import javax.jms.JMSException;
-import javax.jms.Queue;
-import javax.jms.TextMessage;
+import jakarta.inject.Inject;
+import jakarta.jms.JMSException;
+import jakarta.jms.Queue;
+import jakarta.jms.TextMessage;
 import java.util.List;
 import java.util.stream.Collectors;
 

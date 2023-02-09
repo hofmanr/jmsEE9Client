@@ -2,9 +2,9 @@ package nl.hofmanr.jms.client.repository;
 
 import nl.hofmanr.jms.client.exception.DataAccessException;
 
-import javax.enterprise.context.ApplicationScoped;
-import javax.inject.Inject;
-import javax.jms.*;
+import jakarta.enterprise.context.ApplicationScoped;
+import jakarta.inject.Inject;
+import jakarta.jms.*;
 import java.util.ArrayList;
 import java.util.Collections;
 import java.util.Enumeration;

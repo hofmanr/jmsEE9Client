@@ -1,7 +1,7 @@
 package nl.hofmanr.jms.client.repository;
 
-import javax.enterprise.context.ApplicationScoped;
-import javax.jms.ConnectionFactory;
+import jakarta.enterprise.context.ApplicationScoped;
+import jakarta.jms.ConnectionFactory;
 
 @ApplicationScoped
 public class ConnectionFactoryRepository extends BaseRepository<ConnectionFactory> {

@@ -2,8 +2,8 @@ package nl.hofmanr.jms.client.domain;
 
 import nl.hofmanr.jms.client.exception.DataAccessException;
 
-import javax.jms.JMSException;
-import javax.jms.TextMessage;
+import jakarta.jms.JMSException;
+import jakarta.jms.TextMessage;
 
 public class JmsMessageAssembler {
 
